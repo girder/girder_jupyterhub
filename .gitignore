@@ -1,1 +1,5 @@
 *.pyc
+.project
+.pydevproject
+jupyterhub.sqlite
+jupyterhub_cookie_secret
