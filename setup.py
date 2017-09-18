@@ -40,7 +40,7 @@ setup(
 
     keywords='jupyter girder authentication data management',
 
-    packages=['girder_jupyterihub', 'girder_jupyterhub.auth'],
+    packages=['girder_jupyterhub', 'girder_jupyterhub.auth'],
 
     install_requires=[
         'jupyterhub',
