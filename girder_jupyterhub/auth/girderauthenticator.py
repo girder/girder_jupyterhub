@@ -7,7 +7,7 @@ from tornado.httpclient import AsyncHTTPClient
 
 class GirderAuthenticator(Authenticator):
 
-    girder_url = Unicode(
+    api_url = Unicode(
         help='The url to the girder server to use for token validation',
         default_value='http://localhost:8080/api/v1',
         config=True
@@ -24,8 +24,9 @@ class GirderAuthenticator(Authenticator):
     @gen.coroutine
     def authenticate(self, handler, data):
         if 'Girder-Token' in data:
-            me_url = '%s/user/me' % self.girder_url
+            me_url = '%s/user/me' % self.api_url
             girder_token = data['Girder-Token']
+            print(girder_token)
             headers = {
                 'Girder-Token': girder_token
             }
@@ -43,6 +44,7 @@ class GirderAuthenticator(Authenticator):
         return None
 
     def pre_spawn_start(self, user, spawner):
+        print(self._girder_token)
         if user.name in self._girder_token:
             spawner.extra_create_kwargs['command'] += \
                 ' --GirderFileManager.token=%s' % self._girder_token[user.name]
