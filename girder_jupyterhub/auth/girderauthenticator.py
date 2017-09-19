@@ -1,7 +1,7 @@
 import json
 
 from tornado import gen
-from traitlets import Unicode
+from traitlets import Unicode, Bool
 from jupyterhub.auth import Authenticator
 from tornado.httpclient import AsyncHTTPClient
 
@@ -10,6 +10,12 @@ class GirderAuthenticator(Authenticator):
     girder_url = Unicode(
         help='The url to the girder server to use for token validation',
         default_value='http://localhost:8080/api/v1',
+        config=True
+    )
+
+    inject_girder_token = Bool(
+        help='If set an environment variable (GIRDER_TOKEN) is injected into the spawned environment.',
+        default_value=True,
         config=True
     )
 
@@ -40,4 +46,8 @@ class GirderAuthenticator(Authenticator):
         if user.name in self._girder_token:
             spawner.extra_create_kwargs['command'] += \
                 ' --GirderFileManager.token=%s' % self._girder_token[user.name]
+
+            if self.inject_girder_token:
+                spawner.environment['GIRDER_TOKEN'] = self._girder_token[user.name]
+
             del self._girder_token[user.name]
