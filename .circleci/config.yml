@@ -35,7 +35,7 @@ workflows:
 
           filters:
             tags:
-              only: /^v.*/
+              only: /.*?/
             branches:
               only:
                 - master
