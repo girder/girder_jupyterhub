@@ -45,7 +45,7 @@ class GirderAuthenticator(Authenticator):
     def pre_spawn_start(self, user, spawner):
         if user.name in self._girder_token:
             spawner.extra_create_kwargs['command'] += \
-                ' --GirderFileManager.token=%s' % self._girder_token[user.name]
+                ' --GirderContentsManager.token=%s' % self._girder_token[user.name]
 
             if self.inject_girder_token:
                 spawner.environment['GIRDER_TOKEN'] = self._girder_token[user.name]
