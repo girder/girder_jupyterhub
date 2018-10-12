@@ -55,7 +55,7 @@ setup(
     packages=['girder_jupyterhub', 'girder_jupyterhub.auth'],
 
     install_requires=[
-        'jupyterhub',
+        'jupyterhub>0.8',
         'traitlets',
         'tornado'
     ],
