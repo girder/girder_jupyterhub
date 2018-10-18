@@ -31,8 +31,6 @@ setup(
     name='girder-jupyterhub',
     use_scm_version={'local_scheme': prerelease_local_scheme},
     setup_requires=['setuptools_scm'],
-    version='0.1.0',
-
     description='A JupyterHub authenticator for Girder tokens',
     long_description=long_description,
 
