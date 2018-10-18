@@ -19,7 +19,8 @@ class GirderAuthenticator(Authenticator):
         config=True
     )
 
-    _girder_token = {}
+    # This is needed so we can store the Girder-Token in auth state.
+    enable_auth_state = True
 
     @gen.coroutine
     def authenticate(self, handler, data):
@@ -35,19 +36,23 @@ class GirderAuthenticator(Authenticator):
                 response_json = json.loads(r.body.decode('utf8'))
                 if response_json is not None:
                     login = response_json['login']
-                    self._girder_token = {
-                        login: girder_token
+                    return {
+                        'name': login,
+                        'auth_state': {
+                            'girderToken': girder_token,
+                        }
                     }
-                    return login
 
         return None
 
+    @gen.coroutine
     def pre_spawn_start(self, user, spawner):
-        if user.name in self._girder_token:
+        auth_state = yield user.get_auth_state()
+        if auth_state is not None:
             spawner.extra_create_kwargs['command'] += \
-                ' --GirderContentsManager.token=%s' % self._girder_token[user.name]
+                ' --GirderContentsManager.token=%s' % auth_state['girderToken']
 
             if self.inject_girder_token:
-                spawner.environment['GIRDER_TOKEN'] = self._girder_token[user.name]
-
-            del self._girder_token[user.name]
+                spawner.environment['GIRDER_TOKEN'] = auth_state['girderToken']
+        else:
+            self.log.warning('Unable to find Girder-Token in auth state.')
